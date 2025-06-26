@@ -1,0 +1,52 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template block_rajabsgames/level
+
+    TODO describe template level
+
+    Example context (json):
+    {
+    }
+}}
+{{#levels}}
+<li class="rg_level_item iv-mb-2 d-inline-flex flex-column align-items-center iv-rounded-lg bg-light p-2 mb-1 justify-content-between" data-id="{{id}}">
+    <div class="d-flex flex-column align-items-center w-100">
+        <div class="rg_level_icon {{#completed}}completed bg-success{{/completed}} {{#current}}current bg-primary{{/current}}">
+            {{#completed}}<i class="fa fa-check"></i>{{/completed}}{{^completed}}{{order}}{{/completed}}
+        </div>
+        <span class="rg_level_name py-2 px-1 w-100 {{#isblock}}text-truncate{{/isblock}} text-center" title="{{name}}">{{name}}</span>
+        <span class="rg_level_xp text-muted small iv-font-weight-light">{{xp}} <sup>xp</sup></span>
+    </div>
+    {{^isblock}}
+    <div class="actions">
+        <button class="btn btn-sm iv-mr-1 edit-level"
+                data-id="{{id}}"
+                type="button"
+                title="{{#str}}editlevel, block_rajabsgames{{/str}}">
+            <i class="fa fa-edit"></i>
+        </button>
+        <button class="btn btn-sm text-danger delete-level"
+                data-id="{{id}}"
+                type="button"
+                title="{{#str}}deletelevel, block_rajabsgames{{/str}}">
+            <i class="fa fa-trash"></i>
+        </button>
+    </div>
+    {{/isblock}}
+</li>
+{{/levels}}

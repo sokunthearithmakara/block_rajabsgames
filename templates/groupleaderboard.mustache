@@ -1,0 +1,52 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template block_rajabsgames/groupleaderboard
+
+    TODO describe template groupleaderboard
+
+    Example context (json):
+    {
+    }
+}}
+{{#hasgroupleaderboard}}
+<div class="rg_leaderboard ">
+    <h5 class="d-flex align-items-center justify-content-between section-header">
+        <span class="iv-rounded-0 border-0 alert alert-danger m-0 text-danger">{{#str}}groupleaderboard, block_rajabsgames{{/str}}</span>
+        <div class="text-danger">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-people-fill" viewBox="0 0 16 16">
+        <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.24 2.24 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.3 6.3 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5"/>
+        </svg>
+        </div>
+        </h5>
+    <ul class="rg_leaderboard_list p-0">
+        {{#gleaderboard}}
+        <li class="rg_leaderboard_item d-flex align-items-center bg-light mb-2 iv-rounded-lg {{#mine}}active{{/mine}}">
+            <h5 class="rg_leaderboard_rank text-secondary">{{rank}}</h5>
+            <img src="{{pictureurl}}" class="rg_group_image iv-mr-2" alt="{{name}}" width="35" height="35" title="{{name}}">
+            <div class="d-flex flex-column flex-grow-1 iv-mr-1">
+                {{name}}
+            </div>
+            <div class="rg_leaderboard_xp iv-mr-2 iv-font-weight-bold text-nowrap">{{totalxp}} <sup>xp</sup></div>
+        </li>
+        {{/gleaderboard}}
+        {{^gleaderboard}}
+        <div class="text-muted w-100 text-center my-5">{{#str}}nogroupleaderboard, block_rajabsgames{{/str}}</div>
+        {{/gleaderboard}}
+    </ul>
+</div>
+{{/hasgroupleaderboard}}

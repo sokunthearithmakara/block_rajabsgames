@@ -1,0 +1,170 @@
+.rg_leaderboard_item {
+    min-height: 60px;
+}
+
+.rg_leaderboard_item .rg_leaderboard_rank {
+    line-height: 60px;
+    width: 10px;
+    text-align: center;
+    height: 60px;
+    margin-bottom: 0;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.rg_leaderboard_item .userpicture,
+.rg_leaderboard_item .userinitials.size-100 {
+    width: 35px;
+    height: 35px;
+}
+
+.rg_header .userpicture,
+.rg_header .userinitials.size-100 {
+    width: 40px;
+    height: 40px;
+}
+
+.rg_header .userinitials.size-100,
+.rg_leaderboard_item .userinitials.size-100 {
+    font-size: small;
+}
+
+.card-text:has(.block_rajabsgames) {
+    margin: 0 !important;
+}
+
+.rg_badges_list {
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    position: relative;
+    width: 100%;
+}
+
+.rg_badges_list li {
+    width: calc(25% - 0.5rem);
+    margin: 0.25rem;
+}
+
+.block_rajabsgames .rg_badges_list li {
+    width: calc(50% - 0.5rem);
+    margin: 0.25rem;
+}
+
+.rg_level_list {
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    position: relative;
+    width: 100%;
+}
+
+.rg_level_list li {
+    width: calc(16.67% - 0.55rem);
+    margin: 0.25rem;
+}
+
+.block_rajabsgames .rg_level_list li {
+    width: calc(50% - 0.5rem);
+    margin: 0.25rem;
+}
+
+.rg_level_icon {
+    width: 50px;
+    text-align: center;
+    height: 50px;
+    display: block;
+    font-size: 1.5em;
+    background: var(--ivsecondary);
+    border-radius: 50%;
+    line-height: 50px;
+    color: #fff;
+}
+
+.rg_level_icon.completed {
+    background: var(--ivprimary);
+}
+
+.rg_badge_picture.filter {
+    filter: grayscale(1);
+}
+
+.rg_leaderboard_details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+form[data-name="interaction-form"] .rg_badge_item {
+    width: calc(20% - 0.5rem);
+    margin: 0.15rem;
+    min-width: 70px;
+}
+
+.path-mod-interactivevideo #annotation-canvas #badge-preview li {
+    cursor: pointer;
+}
+
+.path-mod-interactivevideo #annotation-canvas #badge-preview {
+    pointer-events: none;
+}
+
+.path-mod-interactivevideo li.jellyIn,
+.path-mod-interactivevideo img.jellyIn {
+    animation: jellyIn 0.5s ease-in-out;
+    transform-origin: center;
+}
+
+.rg_badge_item .badge-complete {
+    bottom: 0.5rem;
+    right: 0.5rem;
+}
+
+.rg_badge_name {
+    text-align: center;
+}
+
+.rg_leaderboard_item.active,
+.rg_level_item:has(.current) {
+    background: var(--ivprimaryalt) !important;
+}
+
+.rg_leaderboard_item.active .rg_leaderboard_rank {
+    color: var(--ivprimary)!important;
+}
+
+.block_rajabsgames.block .card-body {
+    padding: 1rem 0.5rem!important;
+}
+
+.block_rajabsgames h5.section-header {
+    margin: 0 0.25rem 0.5rem 0.25rem;
+    border-bottom: 1px solid var(--ivsecondary);
+}
+
+.block_rajabsgames h5.section-header > div {
+    padding: 0 0.25rem;
+}
+
+.block_rajabsgames h5.section-header > span {
+    text-align: center;
+    padding: 0.1rem 2rem 0.1rem 0.5rem;
+    color: #fff;
+    clip-path: polygon(0% 100%, 100% 100%, 85% 0, 0% 0%);
+}
+
+.block_rajabsgames h5.section-header > span::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%);
+    clip-path: polygon(0% 100%, 100% 100%, 85% 0, 0% 0%);
+    pointer-events: none;
+}

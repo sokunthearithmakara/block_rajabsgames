@@ -1,0 +1,43 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template block_rajabsgames/levelblock
+
+    TODO describe template levelblock
+
+    Example context (json):
+    {
+    }
+}}
+{{#haslevel}}
+<div class="rg_levels ">
+    <h5 class="d-flex align-items-center justify-content-between section-header">
+        <span class="iv-rounded-0 border-0 alert alert-success m-0 text-success">{{#str}}levels, block_rajabsgames{{/str}}</span>
+        <div class="text-success">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bar-chart-fill" viewBox="0 0 16 16">
+        <path d="M1 11a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1zm5-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1zm5-5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1z"/>
+        </svg>
+        </div>
+    </h5>
+    <ul class="rg_level_list p-0">
+        {{>block_rajabsgames/level}}
+        {{^levels}}
+        <div class="text-muted w-100 text-center my-5 empty-message">{{#str}}nolevels, block_rajabsgames{{/str}}</div>
+        {{/levels}}
+    </ul>
+</div>
+{{/haslevel}}

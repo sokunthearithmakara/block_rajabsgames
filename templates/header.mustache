@@ -1,0 +1,66 @@
+{{!
+This file is part of Moodle - http://moodle.org/
+Moodle is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+Moodle is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+You should have received a copy of the GNU General Public License
+along with Moodle.  If not, see <http://www.gnu.org/licenses />.
+}}
+{{!
+@template block_rajabsgames/header
+TODO describe template header
+Example context (json):
+{
+}
+}}
+<div class="rg_header d-flex align-items-start justify-content-between mb-3 flex-column w-100">
+    <div class="d-flex align-items-center w-100">
+        <div class="iv-mr-2">{{{mypicture}}}</div>
+        <div class="d-flex align-items-center">
+            <span class="rg_leaderboard_name iv-font-weight-bold mb-0 h5 iv-mr-2">{{myname}}</span>
+            {{#mygroups}}
+            <img src="{{pictureurl}}"
+                 class="rg_group_image iv-ml-2"
+                 alt="{{name}}"
+                 width="20"
+                 height="20"
+                 title="{{name}}">
+        {{/mygroups}}
+    </div>
+</div>
+<div class="small d-flex flex-column w-100 mt-3">
+    <div class="progress"
+         role="progressbar"
+         aria-valuenow="{{xppercentage}}"
+         aria-valuemin="0"
+         aria-valuemax="100"
+         style="height: 5px">
+        <div class="progress-bar {{#xpcompleted}}bg-success{{/xpcompleted}}"
+             style="width: {{xppercentage}}%"></div>
+    </div>
+    <div class="d-flex justify-content-between">
+        <span class="rg_leaderboard_xp">{{#str}}xp, block_rajabsgames{{/str}}: {{myxp}}</span>
+        <span>/ {{totalxp}}</span>
+    </div>
+    {{#haslevel}}
+    <div class="progress mt-2"
+         role="progressbar"
+         aria-valuenow="{{levelpercentage}}"
+         aria-valuemin="0"
+         aria-valuemax="100"
+         style="height: 5px">
+        <div class="progress-bar {{#levelcompleted}}bg-success{{/levelcompleted}}"
+             style="width: {{levelpercentage}}%"></div>
+    </div>
+    <div class="d-flex justify-content-between">
+        <span class="rg_leaderboard_level">{{#str}}level, block_rajabsgames{{/str}}: {{mylevel}}</span>
+        <span>/ {{totallevel}}</span>
+    </div>
+{{/haslevel}}
+</div>
+</div>

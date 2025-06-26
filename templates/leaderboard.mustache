@@ -1,0 +1,57 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template block_rajabsgames/leaderboard
+
+    TODO describe template leaderboard
+
+    Example context (json):
+    {
+    }
+}}
+{{#hasleaderboard}}
+<div class="rg_leaderboard ">
+    <h5 class="text-info d-flex align-items-center justify-content-between section-header">
+        <span class="iv-rounded-0 border-0 alert alert-info m-0 text-info">{{#str}}leaderboard, block_rajabsgames{{/str}}</span>
+        <div class="text-info">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trophy-fill" viewBox="0 0 16 16">
+        <path d="M2.5.5A.5.5 0 0 1 3 0h10a.5.5 0 0 1 .5.5q0 .807-.034 1.536a3 3 0 1 1-1.133 5.89c-.79 1.865-1.878 2.777-2.833 3.011v2.173l1.425.356c.194.048.377.135.537.255L13.3 15.1a.5.5 0 0 1-.3.9H3a.5.5 0 0 1-.3-.9l1.838-1.379c.16-.12.343-.207.537-.255L6.5 13.11v-2.173c-.955-.234-2.043-1.146-2.833-3.012a3 3 0 1 1-1.132-5.89A33 33 0 0 1 2.5.5m.099 2.54a2 2 0 0 0 .72 3.935c-.333-1.05-.588-2.346-.72-3.935m10.083 3.935a2 2 0 0 0 .72-3.935c-.133 1.59-.388 2.885-.72 3.935"/>
+        </svg>
+        </div>
+        </h5>
+    <ul class="rg_leaderboard_list p-0">
+        {{#topthree}}
+        <li class="rg_leaderboard_item d-flex align-items-center bg-light mb-2 iv-rounded-lg {{#isuser}}active{{/isuser}}">
+            <h5 class="rg_leaderboard_rank text-secondary">{{rank}}</h5>
+            <div class="iv-mr-1">
+                {{{picture}}}
+            </div>
+            <div class="d-flex flex-column flex-grow-1 iv-mr-1">
+                <span class="rg_leaderboard_name d-flex align-items-center">{{name}} {{#theirgroups}}<img src="{{gpictureurl}}" class="rg_group_image iv-ml-2" alt="{{gname}}" width="15" height="15" title="{{gname}}">{{/theirgroups}}</span>
+                            <div class="rg_leaderboard_details text-muted small iv-font-weight-light">
+                <span class="rg_leaderboard_level iv-mr-2">{{#str}}level, block_rajabsgames{{/str}} {{level}} - {{levelname}}</span>
+                </div>
+            </div>
+            <span class="rg_leaderboard_xp iv-mr-2 text-nowrap iv-font-weight-bold">{{xp}} <sup>xp</sup></span>
+        </li>
+        {{/topthree}}
+        {{^topthree}}
+        <div class="text-muted w-100 text-center my-5">{{#str}}noleaderboard, block_rajabsgames{{/str}}</div>
+        {{/topthree}}
+    </ul>
+</div>
+{{/hasleaderboard}}
