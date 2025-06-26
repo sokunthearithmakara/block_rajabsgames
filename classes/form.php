@@ -124,7 +124,9 @@ class form extends \mod_interactivevideo\form\base_form {
         ]);
         $mform->addElement(
             'html',
-            '<h5 class="d-flex align-items-center justify-content-between"><span>' . get_string('availablebadges', 'block_rajabsgames') . '</span><a class="btn btn-light" href="'
+            '<h5 class="d-flex align-items-center justify-content-between"><span>'
+                . get_string('availablebadges', 'block_rajabsgames')
+                . '</span><a class="btn btn-light" href="'
                 . $CFG->wwwroot . '/course/view.php?id=' . $courseid . '&bui_editid=' . $blockdata->id
                 . '" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a></h5>
             <div class="rg_badges_list w-100 mb-3 position-relative">'

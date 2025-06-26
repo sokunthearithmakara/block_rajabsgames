@@ -88,7 +88,10 @@ class block_rajabsgames extends block_base {
 
         $totalxp = $DB->get_record_sql($sql, $params, IGNORE_MISSING);
 
-        if ($this->config->badges && ($this->config->showbadges == 1 || has_capability('block/rajabsgames:addinstance', $this->context))) {
+        if (
+            $this->config->badges
+            && ($this->config->showbadges == 1 || has_capability('block/rajabsgames:addinstance', $this->context))
+        ) {
             // Get badges in used.
             $usedbadges = $DB->get_records(
                 'interactivevideo_items',
@@ -179,7 +182,10 @@ class block_rajabsgames extends block_base {
             $hasbadge = false;
         }
 
-        if ($this->config->levels && ($this->config->showlevels == 1 || has_capability('block/rajabsgames:addinstance', $this->context))) {
+        if (
+            $this->config->levels
+            && ($this->config->showlevels == 1 || has_capability('block/rajabsgames:addinstance', $this->context))
+        ) {
             $levels = json_decode($this->config->levels, true) ?? [];
         } else {
             $levels = [];
@@ -323,14 +329,16 @@ class block_rajabsgames extends block_base {
                 $sql = 'SELECT u.id' . $userfields
                     . ', SUM(c.xp) as totalxp FROM {user} u JOIN {interactivevideo_completion} c ON u.id = c.userid'
                     . ' WHERE c.cmid IN (SELECT id FROM {interactivevideo} WHERE course = :courseid)'
-                    . ' AND u.id IN (SELECT gm.userid FROM {groups_members} gm WHERE gm.groupid IN (' . implode(',', $groupids) . '))'
+                    . ' AND u.id IN (SELECT gm.userid FROM {groups_members} gm WHERE gm.groupid IN ('
+                    . implode(',', $groupids) . '))'
                     . ' GROUP BY u.id ORDER BY totalxp DESC LIMIT 5';
             } else if ($groupmode == SEPARATEGROUPS) {
                 // In separate groups, we need to get the total xp from the mygroups only.
                 $sql = 'SELECT u.id' . $userfields
                     . ', SUM(c.xp) as totalxp FROM {user} u JOIN {interactivevideo_completion} c ON u.id = c.userid'
                     . ' WHERE c.cmid IN (SELECT id FROM {interactivevideo} WHERE course = :courseid)'
-                    . ' AND u.id IN (SELECT gm.userid FROM {groups_members} gm WHERE gm.groupid IN (' . implode(',', $mygroupids) . '))'
+                    . ' AND u.id IN (SELECT gm.userid FROM {groups_members} gm WHERE gm.groupid IN ('
+                    . implode(',', $mygroupids) . '))'
                     . ' GROUP BY u.id ORDER BY totalxp DESC LIMIT 5';
             }
 

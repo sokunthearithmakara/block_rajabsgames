@@ -85,7 +85,6 @@ class level_form extends \core_form\dynamic_form {
      * @return \moodle_url
      */
     protected function get_page_url_for_dynamic_submission(): \moodle_url {
-        // TODO: Return the correct URL.
         return new \moodle_url('/blocks/rajabsgames/badge_form.php');
     }
 
@@ -93,7 +92,6 @@ class level_form extends \core_form\dynamic_form {
      * Defines the form elements.
      */
     protected function definition(): void {
-        // TODO: Add form elements here.
         $mform = &$this->_form;
         $mform->addElement('hidden', 'blockid');
         $mform->setType('blockid', PARAM_INT);
@@ -128,8 +126,8 @@ class level_form extends \core_form\dynamic_form {
         $this->set_display_vertical();
     }
 
-    /*
-     * Validation
+    /**
+     * Form validation.
      *
      * @param array $data
      * @param array $files
@@ -137,7 +135,7 @@ class level_form extends \core_form\dynamic_form {
      */
     public function validation($data, $files) {
         $errors = [];
-        // xplimit must be greater than 0.
+        // XPlimit must be greater than 0.
         if ($data['xplimit'] <= 0) {
             $errors['xplimit'] = get_string('xplimitmustbegreaterthan0', 'block_rajabsgames');
         }

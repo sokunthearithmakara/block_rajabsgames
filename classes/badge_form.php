@@ -126,7 +126,6 @@ class badge_form extends \core_form\dynamic_form {
      * @return \moodle_url
      */
     protected function get_page_url_for_dynamic_submission(): \moodle_url {
-        // TODO: Return the correct URL.
         return new \moodle_url('/blocks/rajabsgames/badge_form.php');
     }
 
@@ -134,7 +133,7 @@ class badge_form extends \core_form\dynamic_form {
      * Defines the form elements.
      */
     protected function definition(): void {
-        // TODO: Add form elements here.
+        // Add form elements here.
         $mform = &$this->_form;
         $mform->addElement('hidden', 'blockid');
         $mform->setType('blockid', PARAM_INT);
@@ -149,12 +148,18 @@ class badge_form extends \core_form\dynamic_form {
         $mform->addRule('badge_name', get_string('required'), 'required', null, 'client');
 
         // Upload badge image.
-        $mform->addElement('filemanager', 'badge_image', get_string('badgeimage', 'block_rajabsgames'), null, [
-            'maxbytes' => 1024 * 1024, // 1 MB.
-            'accepted_types' => ['image'],
-            'subdirs' => 0,
-            'maxfiles' => 1,
-        ]);
+        $mform->addElement(
+            'filemanager',
+            'badge_image',
+            get_string('badgeimage', 'block_rajabsgames'),
+            null,
+            [
+                'maxbytes' => 1024 * 1024,
+                'accepted_types' => ['image'],
+                'subdirs' => 0,
+                'maxfiles' => 1,
+            ]
+        );
         $mform->addRule('badge_image', get_string('required'), 'required', null, 'client');
 
         // Set vertical display.
