@@ -42,7 +42,7 @@ class block_rajabsgames_edit_form extends block_edit_form {
         $mform->addElement('hidden', 'config_levels', '');
         $mform->setType('config_levels', PARAM_RAW);
 
-        $block = $this->__get('block');
+        $block = $this->block;
 
         $badges = $this->block->config->badges ?? '[]';
         $badges = file_prepare_draft_area(

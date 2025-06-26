@@ -26,7 +26,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $plugin->component    = 'block_rajabsgames';
 $plugin->release      = '1.0';
-$plugin->version      = 2025061905;
+$plugin->version      = 2025061906;
 $plugin->version      = 2025061717;
 $plugin->requires     = 2021112800;
 $plugin->supported    = [400, 500];
