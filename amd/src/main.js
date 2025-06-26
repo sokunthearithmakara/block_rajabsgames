@@ -94,12 +94,17 @@ export default class RajabsGames extends Base {
                     badge.name = badgedata.name;
                     badge.picture = badgedata.picture;
                     badge.id = badgedata.id;
+                } else {
+                    badge.id = 0;
                 }
                 if (progress.find(x => x.name == badge.uniqueid)) {
                     badge.completed = true;
                 }
                 return badge;
             });
+
+            // Remove the badges that are no longer available in the course.
+            badges = badges.filter(x => x.id != 0);
 
             // Badges for status: unique badges based on id.
             if (games.intg2 == 1) {
@@ -214,6 +219,10 @@ export default class RajabsGames extends Base {
                 // Fire the confetti.
                 window.fireConfetti();
 
+                $(this).removeClass('jellyIn').addClass('jellyIn').fadeOut(300, () => {
+                    $(this).remove();
+                });
+
                 // Update the progress to database.
                 let details = {};
                 const completeTime = new Date();
@@ -233,10 +242,6 @@ export default class RajabsGames extends Base {
                 details.completed = details.xp == games.xp;
                 self.toggleCompletion(games.id, 'automatic', details);
                 self.addNotification(M.util.get_string('xpearned', 'mod_interactivevideo', Number($(this).data('xp'))), 'success');
-
-                $(this).removeClass('jellyIn').addClass('jellyIn').fadeOut(300, () => {
-                    $(this).remove();
-                });
 
                 // Remove the badge from the list.
                 incompletedBadges = incompletedBadges.filter(x => x.uniqueid != $(this).data('name'));

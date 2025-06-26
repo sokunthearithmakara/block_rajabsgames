@@ -126,7 +126,6 @@ function block_rajabsgames_get_configdata($courseid) {
             'id, configdata',
             IGNORE_MISSING
         );
-        return $contextid;
         if ($block) {
             require_once($CFG->libdir . '/filelib.php');
             $blockcontextid = context_block::instance($block->id)->id;
