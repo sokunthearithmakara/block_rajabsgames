@@ -276,5 +276,20 @@ export const init = async(blockid, contextid, courseid, userid) => {
         });
     });
 
-
+    let Ajax = null;
+    bindEvents('click', '.rjg-refresh', async function() {
+        // Basically clear the $SESSION->block_rajabsgames_main_[blockid] and reload the page.
+        if (!Ajax) {
+            Ajax = await import('core/ajax');
+        }
+        await Ajax.call([
+            {
+                methodname: 'block_rajabsgames_clear_session',
+                args: {
+                    blockinstanceid: blockid
+                }
+            }
+        ]);
+        window.location.reload();
+    });
 };

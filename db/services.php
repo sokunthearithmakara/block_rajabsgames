@@ -15,22 +15,24 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version information for Rajab's Games
+ * External functions and service declaration for Rajab's Games
+ *
+ * Documentation: {@link https://moodledev.io/docs/apis/subsystems/external/description}
  *
  * @package    block_rajabsgames
+ * @category   webservice
  * @copyright  2025 Sokunthearith Makara <sokunthearithmakara@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
-
-$plugin->component    = 'block_rajabsgames';
-$plugin->release      = '1.0';
-$plugin->version      = 2025070203;
-$plugin->requires     = 2021112800;
-$plugin->supported    = [400, 500];
-$plugin->maturity     = MATURITY_STABLE;
-$plugin->dependencies = [
-    'interactivevideo' => 2025071101,
-    'ivplugin_richtext' => 2024071500,
+$functions = [
+    'block_rajabsgames_clear_session' => [
+        'classname' => 'block_rajabsgames\external\session',
+        'classpath' => 'blocks/rajabsgames/classes/external/session.php',
+        'methodname' => 'session',
+        'description' => 'Clear the session data for a block',
+        'type' => 'read',
+        'ajax' => true,
+    ],
 ];

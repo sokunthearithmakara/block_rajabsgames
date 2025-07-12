@@ -42,9 +42,11 @@
             </div>
             <div class="d-flex flex-column flex-grow-1 iv-mr-1">
                 <span class="rg_leaderboard_name d-flex align-items-center">{{name}} {{#theirgroups}}<img src="{{gpictureurl}}" class="rg_group_image iv-ml-2" alt="{{gname}}" width="15" height="15" title="{{gname}}">{{/theirgroups}}</span>
-                            <div class="rg_leaderboard_details text-muted small iv-font-weight-light">
-                <span class="rg_leaderboard_level iv-mr-2">{{#str}}level, block_rajabsgames{{/str}} {{level}} - {{levelname}}</span>
+                {{#levelname}}
+                <div class="rg_leaderboard_details text-muted small iv-font-weight-light">
+                <span class="rg_leaderboard_level iv-mr-2">{{levelname}}</span>
                 </div>
+                {{/levelname}}
             </div>
             <span class="rg_leaderboard_xp iv-mr-2 text-nowrap iv-font-weight-bold">{{xp}} <sup>xp</sup></span>
         </li>

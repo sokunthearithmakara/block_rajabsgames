@@ -34,7 +34,10 @@ $courseid = required_param('courseid', PARAM_INT);
 switch ($action) {
     case 'get_badges':
         $blockdata = (object)block_rajabsgames_get_configdata($courseid);
-        echo json_encode($blockdata->badges);
+        echo json_encode([
+            'badges' => $blockdata->badges,
+            'blockid' => $blockdata->id,
+        ]);
         break;
     case 'get_completiondetails':
         $cmid = required_param('cmid', PARAM_INT);

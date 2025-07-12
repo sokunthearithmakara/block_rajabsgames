@@ -30,4 +30,10 @@
 {{>block_rajabsgames/groupleaderboard}}
 {{>block_rajabsgames/levelblock}}
 {{>block_rajabsgames/badgeblock}}
+<div class="text-muted small mt-3 d-flex justify-content-between align-items-center">
+{{#str}}updatedeveryhour, block_rajabsgames{{/str}}: {{#userdate}} {{timecreated}}, {{#str}}strftimedatetimeshort, core_langconfig{{/str}} {{/userdate}}
+<button type="button" class="iv-ml-auto btn btn-sm btn-light rjg-refresh" title="{{#str}}refreshnow, block_rajabsgames{{/str}}">
+<i class="fa fa-refresh"></i>
+</button>
+</div>
 </div>

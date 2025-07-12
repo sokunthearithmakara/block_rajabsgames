@@ -15,22 +15,44 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version information for Rajab's Games
+ * TODO describe file backup_rajabsgames_step
  *
  * @package    block_rajabsgames
  * @copyright  2025 Sokunthearith Makara <sokunthearithmakara@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+class backup_rajabsgames_block_task extends backup_block_task {
+    /**
+     * Define settings
+     */
+    protected function define_my_settings() {
+    }
 
-defined('MOODLE_INTERNAL') || die();
+    /**
+     * Define the structure of rajabsgames block
+     */
+    protected function define_my_steps() {
+    }
 
-$plugin->component    = 'block_rajabsgames';
-$plugin->release      = '1.0';
-$plugin->version      = 2025070203;
-$plugin->requires     = 2021112800;
-$plugin->supported    = [400, 500];
-$plugin->maturity     = MATURITY_STABLE;
-$plugin->dependencies = [
-    'interactivevideo' => 2025071101,
-    'ivplugin_richtext' => 2024071500,
-];
+    /**
+     * Define the contents of rajabsgames block
+     */
+    public function get_fileareas() {
+        return ['content'];
+    }
+
+    /**
+     * Get configuration data encoded attributes
+     */
+    public function get_configdata_encoded_attributes() {
+        return []; // We need to encode some attrs in configdata.
+    }
+
+    /**
+     * Encode content links
+     * @param string $content
+     */
+    public static function encode_content_links($content) {
+        return $content; // No special encoding of links.
+    }
+}

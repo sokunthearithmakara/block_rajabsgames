@@ -139,6 +139,9 @@ class form extends \mod_interactivevideo\form\base_form {
         $mform->addElement('hidden', 'badges', json_encode($badges));
         $mform->setType('badges', PARAM_RAW);
 
+        // Block id.
+        $mform->addElement('html', '<input type="hidden" name="blockid" value="' . $blockdata->id . '">');
+
         $mform->addElement(
             'hidden',
             'title',
@@ -216,7 +219,7 @@ class form extends \mod_interactivevideo\form\base_form {
         $errors = parent::validation($data, $files);
 
         if (empty($data['content'])) {
-            $errors['destination'] = get_string('youmusthaveatleastonedestination', 'local_ivdecision');
+            $errors['destination'] = get_string('youmusthaveatleastoneposition', 'block_rajabsgames');
         }
 
         return $errors;

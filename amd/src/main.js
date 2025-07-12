@@ -25,6 +25,7 @@ import Base from 'mod_interactivevideo/type/base';
 import DynamicForm from 'core_form/dynamicform';
 import Template from 'core/templates';
 import {renderAnnotationItems} from 'mod_interactivevideo/viewannotation';
+import Ajax from 'core/ajax';
 
 export default class RajabsGames extends Base {
     /**
@@ -83,7 +84,9 @@ export default class RajabsGames extends Base {
                 return;
             }
 
-            let badgeconfig = JSON.parse(block);
+            block = JSON.parse(block);
+            let badgeconfig = block.badges;
+            let blockid = block.blockid;
             badgeconfig = JSON.parse(badgeconfig || '[]');
 
             badges = badges.map(badge => {
@@ -195,7 +198,7 @@ export default class RajabsGames extends Base {
             });
 
             // Claim the badge.
-            $(document).off('click', '.video-block li').on('click', '.video-block li', function(e) {
+            $(document).off('click', '.video-block li').on('click', '.video-block li', async function(e) {
                 e.preventDefault();
                 e.stopImmediatePropagation();
 
@@ -248,6 +251,18 @@ export default class RajabsGames extends Base {
                 if (incompletedBadges.length == 0) {
                     // Stop the timeupdate.games event.
                     $(document).off('timeupdate.games');
+                }
+
+                // Clear the session.
+                if (blockid) {
+                    await Ajax.call([
+                        {
+                            methodname: 'block_rajabsgames_clear_session',
+                            args: {
+                                blockinstanceid: blockid
+                            }
+                        }
+                    ]);
                 }
             });
 
@@ -431,9 +446,11 @@ export default class RajabsGames extends Base {
             $('#annotation-canvas #badge-preview').remove();
         });
 
+        let blockid;
         $(document).off('click', '#submitform-submit').on('click', '#submitform-submit', function(e) {
             e.preventDefault();
             e.stopImmediatePropagation();
+            blockid = $(this).closest('form').find('input[name="blockid"]').val();
             const event = decisionform.trigger(decisionform.events.SUBMIT_BUTTON_PRESSED);
             if (!event.defaultPrevented) {
                 decisionform.submitFormAjax();
@@ -448,9 +465,19 @@ export default class RajabsGames extends Base {
             self.validateTimestampFieldValue('timestampassist', 'timestamp');
         });
 
-        decisionform.addEventListener(decisionform.events.FORM_SUBMITTED, (e) => {
+        decisionform.addEventListener(decisionform.events.FORM_SUBMITTED, async(e) => {
             e.preventDefault();
             e.stopImmediatePropagation();
+            if (blockid) {
+                await Ajax.call([
+                    {
+                        methodname: 'block_rajabsgames_clear_session',
+                        args: {
+                            blockinstanceid: blockid
+                        }
+                    }
+                ]);
+            }
             $.ajax({
                 url: M.cfg.wwwroot + '/mod/interactivevideo/ajax.php',
                 method: "POST",
@@ -516,9 +543,11 @@ export default class RajabsGames extends Base {
             $('#annotation-canvas #badge-preview').remove();
         });
 
+        let blockid;
         $(document).off('click', '#submitform-submit').on('click', '#submitform-submit', function(e) {
             e.preventDefault();
             e.stopImmediatePropagation();
+            blockid = $(this).closest('form').find('input[name="blockid"]').val();
             const event = decisionform.trigger(decisionform.events.SUBMIT_BUTTON_PRESSED);
             if (!event.defaultPrevented) {
                 decisionform.submitFormAjax();
@@ -533,9 +562,19 @@ export default class RajabsGames extends Base {
             self.validateTimestampFieldValue('timestampassist', 'timestamp');
         });
 
-        decisionform.addEventListener(decisionform.events.FORM_SUBMITTED, (e) => {
+        decisionform.addEventListener(decisionform.events.FORM_SUBMITTED, async(e) => {
             e.preventDefault();
             e.stopImmediatePropagation();
+            if (blockid) {
+                await Ajax.call([
+                    {
+                        methodname: 'block_rajabsgames_clear_session',
+                        args: {
+                            blockinstanceid: blockid
+                        }
+                    }
+                ]);
+            }
             this.annotations = this.annotations.filter(x => x.id != id);
             $.ajax({
                 url: M.cfg.wwwroot + '/mod/interactivevideo/ajax.php',

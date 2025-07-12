@@ -58,21 +58,48 @@ class block_rajabsgames_edit_form extends block_edit_form {
         $badges = json_decode($badges, true);
 
         // For each badge, check if it is in used (find in interactivevideo_completion).
-        $badges = array_map(function ($badge) use ($DB) {
-            $badge = (object)$badge;
-            $badge->used = false;
-            $sql = 'SELECT * FROM {interactivevideo_items} WHERE courseid = :courseid AND type = :ctype AND content LIKE :badgeid';
-            $paramsarray = [
-                'badgeid' => '%' . $badge->id . '%',
-                'ctype' => 'rajabsgames',
-                'courseid' => $this->block->page->course->id,
-            ];
-            $completion = $DB->record_exists_sql($sql, $paramsarray);
-            if ($completion) {
-                $badge->used = true;
-            }
-            return $badge;
-        }, $badges);
+        if (!empty($badges)) {
+            $courseid = $this->block->page->course->id;
+            $modinfo = get_fast_modinfo($courseid);
+            $validcm = array_filter($modinfo->cms, function ($cm) {
+                if ($cm->modname != 'interactivevideo' || $cm->deletioninprogress == 1) {
+                    return false;
+                }
+                if (!$cm->uservisible) {
+                    if ($cm->visible && !empty($cm->availability)) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                } else {
+                    return true;
+                }
+                return false;
+            });
+            $validcmid = array_map(function ($cm) {
+                return $cm->instance;
+            }, $validcm);
+            $validcmid = implode(',', $validcmid);
+            $badges = array_map(function ($badge) use ($DB, $courseid, $validcmid) {
+                $badge = (object)$badge;
+                $badge->used = false;
+                $sql = 'SELECT * FROM {interactivevideo_items} WHERE courseid = :courseid AND type = :ctype AND
+                annotationid IN (' . $validcmid . ')
+                AND content LIKE :badgeid';
+                $paramsarray = [
+                    'badgeid' => '%' . $badge->id . '%',
+                    'ctype' => 'rajabsgames',
+                    'courseid' => $courseid,
+                ];
+                $completion = $DB->record_exists_sql($sql, $paramsarray);
+                if ($completion) {
+                    $badge->used = true;
+                }
+                return $badge;
+            }, $badges);
+        } else {
+            $badges = [];
+        }
 
         $usedbadges = array_filter($badges, function ($badge) {
             return $badge->used;
@@ -151,6 +178,9 @@ class block_rajabsgames_edit_form extends block_edit_form {
 
         $mform->addElement('advcheckbox', 'config_showgroupleaderboard', get_string('showgroupleaderboard', 'block_rajabsgames'));
         $mform->setDefault('config_showgroupleaderboard', 1);
+
+        $mform->addElement('hidden', 'config_timeupdated', time());
+        $mform->setType('config_timeupdated', PARAM_INT);
     }
 
     /**
@@ -201,6 +231,7 @@ class block_rajabsgames_edit_form extends block_edit_form {
 
         unset($this->block->config->badges);
         unset($this->block->config->draftid);
+        unset($this->block->config->timeupdated);
         parent::set_data($defaults);
         if (!isset($this->block->config)) {
             $this->block->config = new stdClass();
@@ -208,6 +239,7 @@ class block_rajabsgames_edit_form extends block_edit_form {
         $this->block->config->badges = $badges;
         $this->block->config->draftid = $defaults->draftid ?? 0;
         $this->block->config->levels = isset($defaults->config_levels) ? $defaults->config_levels : '';
+        $this->block->config->timeupdated = time();
     }
 
     /**

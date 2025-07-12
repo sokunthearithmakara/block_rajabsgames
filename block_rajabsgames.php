@@ -49,7 +49,7 @@ class block_rajabsgames extends block_base {
      * @return stdClass
      */
     public function get_content() {
-        global $OUTPUT, $USER, $DB;
+        global $OUTPUT, $USER, $DB, $SESSION;
         $courseid = $this->page->course->id;
         $hasbadge = true;
         $haslevel = true;
@@ -68,9 +68,84 @@ class block_rajabsgames extends block_base {
             return $this->content;
         }
 
+        // Get relevant course modules.
+        $modinfo = get_fast_modinfo($courseid);
+        $validcm = array_filter($modinfo->cms, function ($cm) {
+            if ($cm->modname != 'interactivevideo' || $cm->deletioninprogress == 1) {
+                return false;
+            }
+            if (!$cm->uservisible) {
+                if ($cm->visible && !empty($cm->availability)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return true;
+            }
+            return false;
+        });
+
+        if (empty($validcm)) {
+            return [
+                'text' => '<div class="d-flex align-items-center flex-column">'
+                    . '<i class="fa fa-exclamation-triangle fa-5x mb-3"></i>'
+                    . '<p class="text-muted">'  . get_string('novalidinteractivevideoyet', 'block_rajabsgames') . '</p></div>',
+            ];
+        }
+
+        $validcmid = array_map(function ($cm) {
+            return $cm->instance;
+        }, $validcm);
+
+        $validcmid = implode(',', $validcmid);
+
+        $sessiondata = $SESSION->{'block_rajabsgames_main_' . $this->instance->id} ?? [];
+
+        $sessiondata = (object)$sessiondata;
+
+        // Use cached session data if it is less than an hour old.
+        if (
+            isset($sessiondata->data) && $sessiondata->timecreated + 3600 > time()
+            && $sessiondata->timecreated > $this->config->timeupdated
+        ) {
+            $datafortemplate = $sessiondata->data;
+            // Redo the roles because teacher might switch the role.
+            if ($this->config->badges && $this->config->showbadges != 1 && !has_capability('block/rajabsgames:addinstance', $this->context)) {
+                $datafortemplate['hasbadge'] = false;
+            }
+            if (!has_capability('block/rajabsgames:addinstance', $this->context)) {
+                $datafortemplate['badges'] = array_filter($datafortemplate['badges'], function ($badge) {
+                    return $badge->badgecount > 0;
+                });
+            }
+            if ($this->config->showlevels != 1 && !has_capability('block/rajabsgames:addinstance', $this->context)) {
+                $datafortemplate['haslevel'] = false;
+            }
+            if ($this->config->showleaderboard != 1 && !has_capability('block/rajabsgames:addinstance', $this->context)) {
+                $datafortemplate['hasleaderboard'] = false;
+            }
+            if ($this->config->showgroupleaderboard != 1 && !has_capability('block/rajabsgames:addinstance', $this->context)) {
+                $datafortemplate['hasgroupleaderboard'] = false;
+            }
+
+            $this->content = (object)[
+                'text' => $OUTPUT->render_from_template(
+                    'block_rajabsgames/main',
+                    $datafortemplate
+                ),
+            ];
+            return $this->content;
+        }
+
+        // Clear session data if it is more than an hour old.
+        if (isset($sessiondata->timecreated)) {
+            unset($SESSION->{'block_rajabsgames_main_' . $this->instance->id});
+        }
+
         // Get my XP: sum of xp from interactivevideo_completion table.
         $sql = 'SELECT SUM(xp) as myxp FROM {interactivevideo_completion}'
-            . ' WHERE userid = :userid AND cmid IN (SELECT id FROM {interactivevideo} WHERE course = :courseid)';
+            . ' WHERE userid = :userid AND cmid IN (' . $validcmid . ')';
 
         $params = [
             'userid' => $USER->id,
@@ -80,7 +155,8 @@ class block_rajabsgames extends block_base {
         $myxp = $DB->get_record_sql($sql, $params, IGNORE_MISSING);
 
         // Get total XP: sum of xp from interactivevideo_items table.
-        $sql = 'SELECT SUM(xp) as totalxp FROM {interactivevideo_items} WHERE courseid = :courseid';
+        $sql = 'SELECT SUM(xp) as totalxp FROM {interactivevideo_items} WHERE courseid = :courseid AND annotationid IN ('
+            . $validcmid . ')';
 
         $params = [
             'courseid' => $courseid,
@@ -93,15 +169,12 @@ class block_rajabsgames extends block_base {
             && ($this->config->showbadges == 1 || has_capability('block/rajabsgames:addinstance', $this->context))
         ) {
             // Get badges in used.
-            $usedbadges = $DB->get_records(
-                'interactivevideo_items',
-                [
-                    'courseid' => $courseid,
-                    'type' => 'rajabsgames',
-                ],
-                null,
-                'id, content'
-            );
+            $sql = 'SELECT id, content FROM {interactivevideo_items} WHERE courseid = :courseid AND type = :ttype AND annotationid IN ('
+                . $validcmid . ')';
+            $usedbadges = $DB->get_records_sql($sql, [
+                'courseid' => $courseid,
+                'ttype' => 'rajabsgames',
+            ]);
 
             if (!$usedbadges && !has_capability('block/rajabsgames:addinstance', $this->context)) {
                 // If not a teacher, don't show unused blocks.
@@ -119,7 +192,7 @@ class block_rajabsgames extends block_base {
                 $sql = 'SELECT completiondetails
                         FROM {interactivevideo_completion}
                         WHERE userid = :userid
-                        AND cmid IN (SELECT id FROM {interactivevideo} WHERE course = :courseid)
+                        AND cmid IN (' . $validcmid . ')
                         AND completiondetails LIKE :progress';
 
                 $completions = $DB->get_records_sql($sql, [
@@ -276,7 +349,7 @@ class block_rajabsgames extends block_base {
             $sql = 'SELECT gm.groupid, SUM(c.xp) as totalxp FROM {groups_members} gm
                 JOIN {interactivevideo_completion} c ON gm.userid = c.userid
                 WHERE gm.groupid IN (' . implode(',', $groupids) . ')
-                AND c.cmid IN (SELECT id FROM {interactivevideo} WHERE course = :courseid)
+                AND c.cmid IN (' . $validcmid . ')
                 GROUP BY gm.groupid';
             $params = [
                 'courseid' => $courseid,
@@ -315,20 +388,20 @@ class block_rajabsgames extends block_base {
         }
 
         // Leaderboard: select top 5 users by total xp from interactivevideo_completion table in the course.
-        if ($this->config->showleaderboard == 1 || has_capability('block/rajabsgames:addinstance', $this->context)) {
+        if ($this->config->showleaderboard == 1) {
             $userfields = \core_user\fields::for_userpic()->with_name()->excluding('id');
             $userfields = $userfields->get_sql('u');
             $userfields = $userfields->selects;
             if ($groupmode == NOGROUPS) {
                 $sql = 'SELECT u.id' . $userfields
                     . ', SUM(c.xp) as totalxp FROM {user} u JOIN {interactivevideo_completion} c ON u.id = c.userid'
-                    . ' WHERE c.cmid IN (SELECT id FROM {interactivevideo} WHERE course = :courseid)'
+                    . ' WHERE c.cmid IN (' . $validcmid . ')'
                     . ' GROUP BY u.id ORDER BY totalxp DESC LIMIT 5';
             } else if ($groupmode == VISIBLEGROUPS) {
                 // In visible groups, we need to get the total xp from all groups.
                 $sql = 'SELECT u.id' . $userfields
                     . ', SUM(c.xp) as totalxp FROM {user} u JOIN {interactivevideo_completion} c ON u.id = c.userid'
-                    . ' WHERE c.cmid IN (SELECT id FROM {interactivevideo} WHERE course = :courseid)'
+                    . ' WHERE c.cmid IN (' . $validcmid . ')'
                     . ' AND u.id IN (SELECT gm.userid FROM {groups_members} gm WHERE gm.groupid IN ('
                     . implode(',', $groupids) . '))'
                     . ' GROUP BY u.id ORDER BY totalxp DESC LIMIT 5';
@@ -336,7 +409,7 @@ class block_rajabsgames extends block_base {
                 // In separate groups, we need to get the total xp from the mygroups only.
                 $sql = 'SELECT u.id' . $userfields
                     . ', SUM(c.xp) as totalxp FROM {user} u JOIN {interactivevideo_completion} c ON u.id = c.userid'
-                    . ' WHERE c.cmid IN (SELECT id FROM {interactivevideo} WHERE course = :courseid)'
+                    . ' WHERE c.cmid IN (' . $validcmid . ')'
                     . ' AND u.id IN (SELECT gm.userid FROM {groups_members} gm WHERE gm.groupid IN ('
                     . implode(',', $mygroupids) . '))'
                     . ' GROUP BY u.id ORDER BY totalxp DESC LIMIT 5';
@@ -432,7 +505,6 @@ class block_rajabsgames extends block_base {
         if (has_capability('block/rajabsgames:addinstance', $this->context)) {
             $hasbadge = true;
             $haslevel = true;
-            $hasleaderboard = true;
         }
 
         $datafortemplate['hasbadge'] = $hasbadge;
@@ -442,6 +514,14 @@ class block_rajabsgames extends block_base {
         if ($groupmode != 0 && $grouping != 0) {
             $datafortemplate['mygroups'] = array_values($mygroups);
         }
+
+        $datafortemplate['timecreated'] = time();
+
+        // Save $datafortemplate to $_SESSION.
+        $SESSION->{'block_rajabsgames_main_' . $this->instance->id} = [
+            'data' => $datafortemplate,
+            'timecreated' => time(),
+        ];
 
         $this->content = (object)[
             'text' => $OUTPUT->render_from_template(
@@ -530,6 +610,7 @@ class block_rajabsgames extends block_base {
             $data->badges
         );
 
+        // Rebuilding cache.
         $cachedata = [
             'badges' => file_rewrite_pluginfile_urls(
                 $config->badges,
