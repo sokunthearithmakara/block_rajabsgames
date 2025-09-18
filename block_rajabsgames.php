@@ -14,7 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-use core_group\reportbuilder\datasource\groups;
 
 /**
  * Block block_rajabsgames
@@ -106,7 +105,7 @@ class block_rajabsgames extends block_base {
 
         // Use cached session data if it is less than an hour old.
         if (
-            isset($sessiondata->data) && $sessiondata->timecreated + 3600 > time()
+            isset($sessiondata->data) && $sessiondata->timecreated + 3600 > time() && isset($this->config->timeupdated)
             && $sessiondata->timecreated > $this->config->timeupdated
         ) {
             $datafortemplate = $sessiondata->data;
@@ -378,7 +377,15 @@ class block_rajabsgames extends block_base {
             // Add rank.
             $i = 0;
             foreach ($groups as $group) {
-                $group->rank = $i + 1;
+                if ($i == 0) {
+                    $group->rank = 1;
+                } else {
+                    if ($group->totalxp == $groups[$i - 1]->totalxp) {
+                        $group->rank = $groups[$i - 1]->rank;
+                    } else {
+                        $group->rank = $i + 1;
+                    }
+                }
                 $i++;
             };
 

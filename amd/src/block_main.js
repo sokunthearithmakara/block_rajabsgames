@@ -292,4 +292,6 @@ export const init = async(blockid, contextid, courseid, userid) => {
         ]);
         window.location.reload();
     });
+
+
 };
