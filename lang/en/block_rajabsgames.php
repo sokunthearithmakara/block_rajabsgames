@@ -72,6 +72,7 @@ $string['pluginname'] = 'Rajab\'s Games';
 $string['positions'] = 'Positions';
 $string['privacy:metadata'] = 'The Rajab\'s Games plugin doesn\'t store any personal data.';
 $string['rajabsgames:addinstance'] = 'Add a new Rajab\'s Games block';
+$string['rajabsgamesnotconfigured'] = 'Rajab\'s Games block is not configured yet. Please add a Rajab\'s Games block to the course page and configure it first.';
 $string['rajabsgamessettings'] = 'Block Settings';
 $string['refreshnow'] = 'Refresh now';
 $string['rightclicktousecurrenttime'] = 'Right-click to enter the current time.';
