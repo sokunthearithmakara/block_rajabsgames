@@ -134,11 +134,11 @@ form[data-name="interaction-form"] .rg_badge_item {
 }
 
 .rg_leaderboard_item.active .rg_leaderboard_rank {
-    color: var(--ivprimary)!important;
+    color: var(--ivprimary) !important;
 }
 
 .block_rajabsgames.block .card-body {
-    padding: 1rem 0.5rem!important;
+    padding: 1rem 0.5rem !important;
 }
 
 .block_rajabsgames h5.section-header {
