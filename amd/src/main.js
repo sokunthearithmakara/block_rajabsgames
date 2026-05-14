@@ -26,6 +26,7 @@ import DynamicForm from 'core_form/dynamicform';
 import Template from 'core/templates';
 import {renderAnnotationItems} from 'mod_interactivevideo/viewannotation';
 import Ajax from 'core/ajax';
+import {get_string as getString} from 'core/str';
 
 export default class RajabsGames extends Base {
     /**
@@ -155,7 +156,7 @@ export default class RajabsGames extends Base {
 
             // Put the html to each badge.
             let $badgeHTML = $('<div>' + badgeHTML + '</div>');
-            incompletedBadges = incompletedBadges.map(x => {
+            incompletedBadges = incompletedBadges.map(async(x) => {
                 let $el = $badgeHTML.find(`[data-id="${x.id}"]`);
                 $el = $el.clone();
                 $el.addClass('pulse-sm jellyIn');
@@ -163,7 +164,7 @@ export default class RajabsGames extends Base {
                 $el.attr('data-xp', x.xp);
                 if (x.xp > 0) {
                     $el.append(`<small class="text-muted">
-                        ${x.xp} <sup>${M.util.get_string('xp', 'block_rajabsgames')}</sup></small>`);
+                        ${x.xp} <sup>${await getString('xp', 'block_rajabsgames')}</sup></small>`);
                 }
                 x.html = $el.prop('outerHTML');
                 x.classes = self.getPosition(x.position);
@@ -244,7 +245,7 @@ export default class RajabsGames extends Base {
                 details.gameprogress = progress;
                 details.completed = details.xp == games.xp;
                 self.toggleCompletion(games.id, 'automatic', details);
-                self.addNotification(M.util.get_string('xpearned', 'mod_interactivevideo', Number($(this).data('xp'))), 'success');
+                self.addNotification(await getString('xpearned', 'mod_interactivevideo', Number($(this).data('xp'))), 'success');
 
                 // Remove the badge from the list.
                 incompletedBadges = incompletedBadges.filter(x => x.uniqueid != $(this).data('name'));
@@ -276,14 +277,14 @@ export default class RajabsGames extends Base {
      * @param {{}} [details={}] Completion details
      * @returns {Promise}
      */
-    toggleCompletion(id, type = 'automatic', details = {}) {
+    async toggleCompletion(id, type = 'automatic', details = {}) {
         let self = this;
         // Skip if the page is the interactions page or in preview-mode.
         if (self.isEditMode()) {
             return Promise.resolve(); // Return a resolved promise for consistency
         }
         if (self.isPreviewMode()) {
-            self.addNotification(M.util.get_string('completionnotrecordedinpreviewmode', 'mod_interactivevideo'));
+            self.addNotification(await getString('completionnotrecordedinpreviewmode', 'mod_interactivevideo'));
             return Promise.resolve(); // Return a resolved promise for consistency
         }
 
@@ -933,7 +934,7 @@ export default class RajabsGames extends Base {
             if (annotation.char1 == 1) {
                 $message.append(`<button class="btn btn-secondary btn-rounded position-absolute"
                      id="close-decision" style="right: 1rem; top: 1rem;">
-                     ${M.util.get_string('skip', 'local_ivdecision')}
+                     ${await getString('skip', 'local_ivdecision')}
                      <i class="iv-ml-2 bi bi-chevron-right"></i></button>`);
             }
 

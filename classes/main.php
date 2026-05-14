@@ -51,6 +51,7 @@ class main extends \ivplugin_richtext\main {
             'authorlink' => 'mailto:sokunthearithmakara@gmail.com',
             'stringcomponent' => 'block_rajabsgames',
             'tutorial' => get_string('tutorialurl', 'block_rajabsgames'),
+            'preloadstrings' => false,
         ];
     }
 

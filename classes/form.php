@@ -92,8 +92,8 @@ class form extends \mod_interactivevideo\form\base_form {
         }
 
         if ($blockdata == null) {
-            $mform->addElement('html', get_string('rajabsgamesnotconfigured', 'block_rajabsgames'));
-            $mform->addElement('html', '<button class="btn btn-secondary" id="cancel-submit">'
+            $mform->addElement('html', '<p>' . get_string('rajabsgamesnotconfigured', 'block_rajabsgames') . '</p>
+                <button class="btn btn-secondary" id="cancel-submit">'
                 . get_string('cancel') . '</button>');
             return;
         }
