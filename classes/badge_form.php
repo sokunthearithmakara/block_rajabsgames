@@ -26,7 +26,6 @@ use block_manager;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class badge_form extends \core_form\dynamic_form {
-
     /**
      * Returns the context for dynamic submission.
      *

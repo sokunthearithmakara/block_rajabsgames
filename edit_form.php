@@ -22,7 +22,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class block_rajabsgames_edit_form extends block_edit_form {
-
     /**
      * Form fields specific to this type of block
      *

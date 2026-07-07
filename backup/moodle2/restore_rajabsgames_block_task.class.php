@@ -27,7 +27,6 @@ defined('MOODLE_INTERNAL') || die();
  * Specialised restore task for the block
  */
 class restore_rajabsgames_block_task extends restore_block_task {
-
     /**
      * Define settings
      */
