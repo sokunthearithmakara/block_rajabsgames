@@ -46,8 +46,7 @@ class badge_form extends \core_form\dynamic_form {
     /**
      * Processes the dynamic submission.
      *
-     * @param array $data
-     * @return mixed
+     * @return \stdClass
      */
     public function process_dynamic_submission(): \stdClass {
         global $USER;
@@ -92,7 +91,6 @@ class badge_form extends \core_form\dynamic_form {
     /**
      * Sets data for dynamic submission.
      *
-     * @param array|stdClass $data
      * @return void
      */
     public function set_data_for_dynamic_submission(): void {

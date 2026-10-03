@@ -604,6 +604,10 @@ class block_rajabsgames extends block_base {
 
     /**
      * Serialize and store config data
+     *
+     * @param stdClass $data
+     * @param bool $nolongerused
+     * @return void
      */
     public function instance_config_save($data, $nolongerused = false) {
         $config = clone($data);
