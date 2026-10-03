@@ -34,44 +34,42 @@ external_compat::load();
  */
 class session extends external_api {
     /**
-     * Get enrolled users parameters
+     * Clear session parameters
      *
      * @return external_function_parameters
      */
-    public static function session_parameters() {
+    public static function execute_parameters() {
         return new external_function_parameters([
             'blockinstanceid' => new external_value(PARAM_INT, 'The block instance id', VALUE_REQUIRED),
         ]);
     }
 
     /**
-     * Get the list of all course's users
+     * Clear session
      *
-     * @param array $search
-     *
-     * @return array
-     *
-     * @throws \coding_exception
-     * @throws \dml_exception
-     * @throws \invalid_parameter_exception
-     * @throws \moodle_exception
+     * @param int $blockinstanceid The block instance id.
+     * @return array The result of the guest check.
      */
-    public static function session($blockinstanceid) {
+    public static function execute($blockinstanceid) {
         global $SESSION;
+
+        $params = self::validate_parameters(self::execute_parameters(), [
+            'blockinstanceid' => $blockinstanceid,
+        ]);
 
         require_login();
 
-        unset($SESSION->{'block_rajabsgames_main_' . $blockinstanceid});
+        unset($SESSION->{'block_rajabsgames_main_' . $params['blockinstanceid']});
 
         return ['status' => 'success'];
     }
 
     /**
-     * Get enrolled users return fields
+     * Clear session return fields
      *
      * @return external_single_structure
      */
-    public static function session_returns() {
+    public static function execute_returns() {
         return new external_single_structure([
             'status' => new external_value(PARAM_TEXT, 'The status of the guest check'),
         ]);

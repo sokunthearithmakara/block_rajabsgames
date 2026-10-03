@@ -108,7 +108,10 @@ class block_rajabsgames extends block_base {
         ) {
             $datafortemplate = $sessiondata->data;
             // Redo the roles because teacher might switch the role.
-            if ($this->config->badges && $this->config->showbadges != 1 && !has_capability('block/rajabsgames:addinstance', $this->context)) {
+            if (
+                $this->config->badges && $this->config->showbadges != 1
+                && !has_capability('block/rajabsgames:addinstance', $this->context)
+            ) {
                 $datafortemplate['hasbadge'] = false;
             }
             if (!has_capability('block/rajabsgames:addinstance', $this->context)) {
@@ -166,8 +169,8 @@ class block_rajabsgames extends block_base {
             && ($this->config->showbadges == 1 || has_capability('block/rajabsgames:addinstance', $this->context))
         ) {
             // Get badges in used.
-            $sql = 'SELECT id, content FROM {interactivevideo_items} WHERE courseid = :courseid AND type = :ttype AND annotationid IN ('
-                . $validcmid . ')';
+            $sql = 'SELECT id, content FROM {interactivevideo_items} WHERE courseid = :courseid AND type = :ttype'
+                . ' AND annotationid IN (' . $validcmid . ')';
             $usedbadges = $DB->get_records_sql($sql, [
                 'courseid' => $courseid,
                 'ttype' => 'rajabsgames',
@@ -603,7 +606,7 @@ class block_rajabsgames extends block_base {
      * Serialize and store config data
      */
     public function instance_config_save($data, $nolongerused = false) {
-        $config = clone ($data);
+        $config = clone($data);
         // Move embedded files into a proper filearea and adjust HTML links to match.
         $config->badges = file_save_draft_area_files(
             $data->draftid,

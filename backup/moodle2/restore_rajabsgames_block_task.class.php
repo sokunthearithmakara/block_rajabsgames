@@ -22,7 +22,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
 /**
  * Specialised restore task for the block
  */
@@ -53,11 +52,16 @@ class restore_rajabsgames_block_task extends restore_block_task {
         return []; // We need to encode some attrs in configdata.
     }
 
+    /**
+     * Define the contents in the block
+     */
     public static function define_decode_contents() {
-
         return [];
     }
 
+    /**
+     * Define the decoding rules for the block
+     */
     public static function define_decode_rules() {
         return [];
     }
