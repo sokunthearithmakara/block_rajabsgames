@@ -119,7 +119,7 @@ class level_form extends \core_form\dynamic_form {
         ]);
         $mform->setType('xplimit', PARAM_INT);
         $mform->addRule('xplimit', get_string('required'), 'required', null, 'client');
-        $mform->addRule('xplimit', get_string('numeric'), 'numeric', null, 'client');
+        $mform->addRule('xplimit', null, 'numeric', null, 'client');
 
         // Set vertical display.
         $this->set_display_vertical();

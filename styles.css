@@ -168,3 +168,7 @@ form[data-name="interaction-form"] .rg_badge_item {
     clip-path: polygon(0% 100%, 100% 100%, 85% 0, 0% 0%);
     pointer-events: none;
 }
+
+[data-bs-theme="dark"] .block_rajabsgames h5.section-header > span::after {
+    background: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 100%);
+}

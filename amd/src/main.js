@@ -42,7 +42,7 @@ export default class RajabsGames extends Base {
     async init() {
         let self = this;
 
-        if (!this.isEditMode() && !this.isPreviewMode()) {
+        if (!this.isEditMode()) {
             const games = this.annotations.find(x => x.type == 'rajabsgames');
             if (!games) {
                 return;
@@ -61,34 +61,44 @@ export default class RajabsGames extends Base {
             });
 
             let badges = games.content;
-            badges = JSON.parse(badges || '[]');
+            badges = typeof badges === 'string' ? JSON.parse(badges || '[]') : (badges || []);
 
-            let progress = await $.ajax({
-                url: M.cfg.wwwroot + '/blocks/rajabsgames/ajax.php',
-                method: "POST",
-                dataType: "text",
-                data: {
-                    action: 'get_completiondetails',
-                    sesskey: M.cfg.sesskey,
-                    courseid: self.course,
-                    cmid: self.interaction,
-                    userid: self.userid
+            let progress = [];
+            try {
+                let progressRes = await $.ajax({
+                    url: M.cfg.wwwroot + '/blocks/rajabsgames/ajax.php',
+                    method: "POST",
+                    dataType: "text",
+                    data: {
+                        action: 'get_completiondetails',
+                        sesskey: M.cfg.sesskey,
+                        courseid: self.course,
+                        cmid: self.interaction,
+                        userid: self.userid
+                    }
+                });
+                progress = JSON.parse(progressRes || '[]');
+                if (typeof progress === 'string') {
+                    progress = JSON.parse(progress || '[]');
                 }
-            });
-            progress = JSON.parse(progress || '[]');
-            progress = JSON.parse(progress || '[]');
-            progress = progress.map(x => JSON.parse(x));
-            progress = progress.find(x => x.id == games.id);
-            progress = progress ? progress.gameprogress || [] : [];
+                if (!Array.isArray(progress)) {
+                    progress = [];
+                }
+                progress = progress.map(x => typeof x === 'string' ? JSON.parse(x) : x);
+                progress = progress.find(x => x && x.id == games.id);
+                progress = progress ? progress.gameprogress || [] : [];
+            } catch (err) {
+                progress = [];
+            }
 
             if (badges.length == 0) {
                 return;
             }
 
-            block = JSON.parse(block);
+            block = JSON.parse(block || '{}');
             let badgeconfig = block.badges;
             let blockid = block.blockid;
-            badgeconfig = JSON.parse(badgeconfig || '[]');
+            badgeconfig = typeof badgeconfig === 'string' ? JSON.parse(badgeconfig || '[]') : (badgeconfig || []);
 
             badges = badges.map(badge => {
                 badge.isblock = true;
@@ -156,7 +166,8 @@ export default class RajabsGames extends Base {
 
             // Put the html to each badge.
             let $badgeHTML = $('<div>' + badgeHTML + '</div>');
-            incompletedBadges = incompletedBadges.map(async(x) => {
+            const xpString = await getString('xp', 'block_rajabsgames');
+            incompletedBadges = incompletedBadges.map((x) => {
                 let $el = $badgeHTML.find(`[data-id="${x.id}"]`);
                 $el = $el.clone();
                 $el.addClass('pulse-sm jellyIn');
@@ -164,7 +175,7 @@ export default class RajabsGames extends Base {
                 $el.attr('data-xp', x.xp);
                 if (x.xp > 0) {
                     $el.append(`<small class="text-muted">
-                        ${x.xp} <sup>${await getString('xp', 'block_rajabsgames')}</sup></small>`);
+                        ${x.xp} <sup>${xpString}</sup></small>`);
                 }
                 x.html = $el.prop('outerHTML');
                 x.classes = self.getPosition(x.position);
@@ -174,23 +185,27 @@ export default class RajabsGames extends Base {
             $(document).off('timeupdate.games').on('timeupdate.games', async function(e) {
                 const t = Number(e.originalEvent.detail.time);
                 const badge = incompletedBadges.find(x => x.timestamp <= t && x.timestamp + 5 >= t && !x.completed);
-                let isEmpty = $('.video-block').find('li').length == 0;
+                let $videoBlock = $('.video-block');
+                if ($videoBlock.length === 0 && $('#video-wrapper').length > 0) {
+                    $videoBlock = $('<div class="video-block" aria-hidden="true"></div>').appendTo('#video-wrapper');
+                }
+                let isEmpty = $videoBlock.find('li').length == 0;
                 if (!badge && !isEmpty) {
-                    $('.video-block').empty();
+                    $videoBlock.empty();
                     // Remove all classes.
-                    $('.video-block').attr('class', 'video-block');
+                    $videoBlock.attr('class', 'video-block');
                     return;
                 }
-                if ($(`.video-block li`).length > 0) {
+                if ($videoBlock.find('li').length > 0) {
                     return;
                 }
                 // If there is a matching badge on timestamp, show it.
                 if (badge) {
-                    $('.video-block').empty();
+                    $videoBlock.empty();
                     // Remove all classes.
-                    $('.video-block').attr('class', 'video-block');
-                    $('.video-block').addClass(badge.classes + ' p-2');
-                    $('.video-block').append(badge.html);
+                    $videoBlock.attr('class', 'video-block');
+                    $videoBlock.addClass(badge.classes + ' p-2');
+                    $videoBlock.append(badge.html);
                     if (games.intg3 == 1) {
                         // Pause the video.
                         self.player.pause();
@@ -221,7 +236,9 @@ export default class RajabsGames extends Base {
                 }
 
                 // Fire the confetti.
-                window.fireConfetti();
+                if (typeof window.fireConfetti === 'function') {
+                    window.fireConfetti();
+                }
 
                 $(this).removeClass('jellyIn').addClass('jellyIn').fadeOut(300, () => {
                     $(this).remove();
@@ -230,10 +247,12 @@ export default class RajabsGames extends Base {
                 // Update the progress to database.
                 let details = {};
                 const completeTime = new Date();
-                let windowAnno = window.ANNOS.find(x => x.id == games.id);
+                let windowAnno = (window.ANNOS || []).find(x => x.id == games.id) ||
+                    {duration: 0, newstarttime: completeTime.getTime()};
                 details.xp = cummulatedXP + Number($(this).data('xp'));
                 cummulatedXP = details.xp;
-                details.duration = windowAnno.duration + (completeTime.getTime() - windowAnno.newstarttime);
+                const startTime = windowAnno.newstarttime || completeTime.getTime();
+                details.duration = (windowAnno.duration || 0) + (completeTime.getTime() - startTime);
                 details.timecompleted = completeTime.getTime();
                 details.hasDetails = false;
                 progress.push({
@@ -705,13 +724,13 @@ export default class RajabsGames extends Base {
                     $('#destination-list').append(`<div class="input-group mb-1 d-none">
                 <input type="text" class="uniqueid form-control" value=""
                      placeholder="${M.util.get_string('uniquename', 'block_rajabsgames')}">
-                <select class="custom-select form-select badgeoption">
+                <select class="${self.isBS5 ? 'form-select' : 'custom-select'} badgeoption">
                 <option value="">${M.util.get_string('selectabadge', 'block_rajabsgames')}</option>
                         ${badgeoptions.map((badge) => {
                         return `<option value="${badge.id}">${badge.name}</option>`;
                     }).join('')}
                 </select>
-                <select class="custom-select form-select positionoption">
+                <select class="${self.isBS5 ? 'form-select' : 'custom-select'} positionoption">
                         ${positions.map((position) => {
                         return `<option value="${position.name}" ${position.selected}>${position.label}</option>`;
                     }).join('')}
@@ -731,13 +750,13 @@ export default class RajabsGames extends Base {
                         $('#destination-list').append(`<div class="input-group mb-1">
                     <input type="text" class="uniqueid form-control" value="${d.uniqueid}"
                      placeholder="${M.util.get_string('uniquename', 'block_rajabsgames')}">
-                    <select class="custom-select form-select badgeoption">
+                    <select class="${self.isBS5 ? 'form-select' : 'custom-select'} badgeoption">
                         <option value="">${M.util.get_string('selectabadge', 'block_rajabsgames')}</option>
                                 ${badgeoptions.map((badge) => {
                             return `<option value="${badge.id}" ${badge.id == d.badgeid ? 'selected' : ''}>${badge.name}</option>`;
                         }).join('')}
                         </select>
-                    <select class="custom-select form-select positionoption">
+                    <select class="${self.isBS5 ? 'form-select' : 'custom-select'} positionoption">
                             ${positions.map((position) => {
                             return `<option value="${position.name}"
                              ${position.name == d.position ? 'selected' : ''}>${position.label}</option>`;
